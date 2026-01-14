@@ -1,48 +1,94 @@
+import time
 import os
-from core import Actions
+import sys
 from rich.console import Console
+from rich.layout import Layout
 from rich.panel import Panel
+from rich.live import Live
 from rich.table import Table
+from rich.text import Text
+from rich.progress import Progress, SpinnerColumn, TextColumn
+from core import Actions
 
 console = Console()
 
-def show_main_menu():
-    os.system('clear')
-    console.print(Panel.fit(
-        "   [bold cyan]HTAT v2.0 - نظام التحكم المتكامل[/bold cyan]   \n"
-        "[bold white]مساعدك العربي الشامل في كالي لينكس[/bold white]",
-        border_style="bright_blue"
-    ))
+def create_layout() -> Layout:
+    layout = Layout()
+    layout.split_column(
+        Layout(name="header", size=3),
+        Layout(name="body", size=20),
+        Layout(name="footer", size=3)
+    )
+    return layout
 
-    # إنشاء جدول الأقسام
-    table = Table(show_header=True, header_style="bold magenta")
-    table.add_column("القسم", justify="center", style="yellow")
-    table.add_column("الأدوات والمهام المتاحة", justify="right")
+class Header:
+    def __rich__(self) -> Panel:
+        grid = Table.grid(expand=True)
+        grid.add_column(justify="center", ratio=1)
+        grid.add_row(Text("HTAT ULTIMATE v3.0 - مساعد التحكم المتقدم", style="bold cyan"))
+        return Panel(grid, style="green")
 
-    table.add_row("📡 الشبكات", "1) فحص سريع | 2) تفعيل وضع المراقبة (ALFA) | 3) Bettercap (MITM)")
-    table.add_row("👤 الحسابات", "4) مدير الحسابات | 5) أتمتة المتابعة | 6) مصنع الصفحات")
-    table.add_row("⚙️ النظام", "7) تحديث شامل | 8) تنظيف النظام | 9) معلومات الأجهزة")
-    table.add_row("❌ خروج", "0) إغلاق الأداة")
+def make_dashboard_table() -> Table:
+    table = Table(expand=True, border_style="bright_blue")
+    table.add_column("القسم", justify="center", style="bold yellow")
+    table.add_column("الخيار", justify="center", style="cyan")
+    table.add_column("الوصف الوظيفي", justify="right", style="white")
 
-    console.print(table)
+    table.add_row("📡 الشبكات", "1", "فحص الأهداف + خريطة الشبكة")
+    table.add_row("📶 ALFA", "2", "تفعيل Monitor Mode + حقن الحزم")
+    table.add_row("🕵️ Bettercap", "3", "هجوم MITM تلقائي (Sniffing)")
+    table.add_row("🤖 الحسابات", "4", "نظام الأتمتة (تسجيل دخول + متابعة)")
+    table.add_row("⚙️ النظام", "5", "تحديث شامل + تنظيف العمق")
+    table.add_row("🛑 إغلاق", "0", "خروج آمن من الأداة")
+    return table
 
-def start():
+def run_task_animation(task_name):
+    with Progress(
+        SpinnerColumn(),
+        TextColumn("[progress.description]{task_description}"),
+        transient=True,
+    ) as progress:
+        progress.add_task(description=f"جاري تنفيذ: {task_name}...", total=None)
+        time.sleep(2) # محاكاة وقت التحميل
+
+def main():
+    layout = create_layout()
+    layout["header"].update(Header())
+    
+    with Live(layout, refresh_per_second=4, screen=True):
+        while True:
+            layout["body"].update(Panel(make_dashboard_table(), title="لوحة التحكم الرئيسية", border_style="blue"))
+            layout["footer"].update(Panel(Text("أدخل رقم العملية لبدء التنفيذ...", justify="center", style="dim")))
+            
+            # ملاحظة: في وضع Live الكامل نحتاج لإدخال خارجي
+            # سنستخدم هنا واجهة الإدخال التقليدية لكن بتنسيق أفضل
+            break 
+
     while True:
-        show_main_menu()
-        choice = input("\n[HTAT] أدخل رقم المهمة: ")
-
-        if choice == '1': Actions.net_scan()
-        elif choice == '2': Actions.alfa_monitor_mode()
-        elif choice == '3': Actions.run_bettercap_full()
-        elif choice == '4': Actions.account_automation_info()
-        elif choice == '7': Actions.full_update()
-        elif choice == '0':
-            console.print("[bold red]تم إغلاق النظام.[/bold red]")
-            break
-        else:
-            console.print("[bold yellow]جاري تطوير هذا القسم...[/bold yellow]")
+        os.system('clear')
+        console.print(Header())
+        console.print(Panel(make_dashboard_table(), border_style="blue"))
         
-        input("\nاضغط Enter للعودة للقائمة...")
+        choice = console.input("\n[bold green]HTAT[/bold green] > ")
+
+        if choice == '1':
+            run_task_animation("فحص الشبكة")
+            Actions.network_scan()
+        elif choice == '2':
+            run_task_animation("تهيئة كارت ALFA")
+            Actions.start_alfa_monitor()
+        elif choice == '3':
+            run_task_animation("تشغيل هجوم Bettercap")
+            Actions.run_bettercap_auto()
+        elif choice == '4':
+            # هنا سنربط كود السيلينيوم القادم
+            console.print("[bold magenta]جاري تشغيل محرك الأتمتة...[/bold magenta]")
+            Actions.social_bot_status()
+        elif choice == '0':
+            console.print("[bold red]إغلاق الأنظمة... وداعاً[/bold red]")
+            break
+        
+        input("\nإضغط Enter للعودة...")
 
 if __name__ == "__main__":
-    start()
+    main()
