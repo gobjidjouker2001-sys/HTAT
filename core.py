@@ -1,34 +1,30 @@
 import os
-import subprocess
 
 class Actions:
-    # --- قسم الشبكة ---
     @staticmethod
-    def net_scan():
+    def network_scan():
         os.system("sudo arp-scan --localnet")
 
     @staticmethod
-    def alfa_monitor_mode():
-        # تفعيل وضع المراقبة لكارت الألفا تلقائياً
-        os.system("sudo ifconfig wlan0 down")
+    def start_alfa_monitor():
+        # أوامر كارت الألفا
         os.system("sudo airmon-ng check kill")
-        os.system("sudo iwconfig wlan0 mode monitor")
-        os.system("sudo ifconfig wlan0 up")
-        print("[+] كارت ALFA الآن في وضع المراقبة (Monitor Mode)")
+        os.system("sudo airmon-ng start wlan0") # تأكد أن اسم الكارت wlan0
+        print("\n[+] تم تفعيل وضع Monitor Mode بنجاح.")
 
     @staticmethod
-    def run_bettercap_full():
-        # تشغيل bettercap مع تفعيل الاستنشاق فوراً
-        os.system("sudo bettercap -eval 'net.probe on; net.sniff on; set http.proxy.sslstrip true'")
+    def run_bettercap_auto():
+        # تشغيل بيتركاب مع واجهة تفاعلية بسيطة
+        os.system("sudo bettercap -eval 'net.probe on; net.show'")
 
-    # --- قسم الحسابات (النواة الأساسية) ---
     @staticmethod
-    def account_automation_info():
-        print("\n[!] ميزة الأتمتة: تتطلب وجود ملف accounts.txt")
-        print("[*] المهام: تسجيل دخول جماعي | متابعة تلقائية | إنشاء صفحات")
-        # هنا سنضيف لاحقاً كود السيلينيوم الخاص بك
+    def social_bot_status():
+        print("\n[🤖] نظام الأتمتة:")
+        print("1. تسجيل دخول تلقائي")
+        print("2. متابعة جماعية")
+        print("3. إنشاء حسابات")
+        # هذا الجزء سنملاه بكود Selenium في الخطوة القادمة
 
-    # --- قسم النظام ---
     @staticmethod
-    def full_update():
-        os.system("sudo apt update && sudo apt full-upgrade -y")
+    def update_system():
+        os.system("sudo apt update && sudo apt upgrade -y")
