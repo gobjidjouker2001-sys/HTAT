@@ -1,6 +1,3 @@
-import installer
-installer.setup() # التأكد من المكتبات عند كل تشغيل
-
 import os
 from core import Actions
 from rich.console import Console
@@ -9,46 +6,43 @@ from rich.table import Table
 
 console = Console()
 
-def main_menu():
+def show_main_menu():
     os.system('clear')
     console.print(Panel.fit(
-        "   [bold cyan]HTAT - مساعد الهكر العربي[/bold cyan]   \n"
-        "[bold white]Hacky Terminal Assistant Tool v1.0[/bold white]",
-        border_style="green"
+        "   [bold cyan]HTAT v2.0 - نظام التحكم المتكامل[/bold cyan]   \n"
+        "[bold white]مساعدك العربي الشامل في كالي لينكس[/bold white]",
+        border_style="bright_blue"
     ))
-    
-    table = Table(show_header=True, header_style="bold yellow")
-    table.add_column("الرقم", justify="center", style="cyan")
-    table.add_column("الأمر الوظيفي", justify="right", style="white")
 
-    table.add_row("1", "فحص الأجهزة المتصلة بالشبكة")
-    table.add_row("2", "تشغيل أداة Bettercap")
-    table.add_row("3", "تحديث نظام كالي والأدوات")
-    table.add_row("4", "عرض مواصفات الجهاز والنظام")
-    table.add_row("0", "إغلاق الأداة")
+    # إنشاء جدول الأقسام
+    table = Table(show_header=True, header_style="bold magenta")
+    table.add_column("القسم", justify="center", style="yellow")
+    table.add_column("الأدوات والمهام المتاحة", justify="right")
+
+    table.add_row("📡 الشبكات", "1) فحص سريع | 2) تفعيل وضع المراقبة (ALFA) | 3) Bettercap (MITM)")
+    table.add_row("👤 الحسابات", "4) مدير الحسابات | 5) أتمتة المتابعة | 6) مصنع الصفحات")
+    table.add_row("⚙️ النظام", "7) تحديث شامل | 8) تنظيف النظام | 9) معلومات الأجهزة")
+    table.add_row("❌ خروج", "0) إغلاق الأداة")
 
     console.print(table)
 
 def start():
     while True:
-        main_menu()
-        choice = input("\n[HTAT] اختر عملية: ")
-        
-        if choice == '1':
-            Actions.network_scan()
-        elif choice == '2':
-            Actions.run_bettercap()
-        elif choice == '3':
-            Actions.update_kali()
-        elif choice == '4':
-            Actions.sys_info()
+        show_main_menu()
+        choice = input("\n[HTAT] أدخل رقم المهمة: ")
+
+        if choice == '1': Actions.net_scan()
+        elif choice == '2': Actions.alfa_monitor_mode()
+        elif choice == '3': Actions.run_bettercap_full()
+        elif choice == '4': Actions.account_automation_info()
+        elif choice == '7': Actions.full_update()
         elif choice == '0':
-            console.print("[bold red]تم الخروج من HTAT.. وداعاً[/bold red]")
+            console.print("[bold red]تم إغلاق النظام.[/bold red]")
             break
         else:
-            console.print("[yellow]خيار غير معروف![/yellow]")
+            console.print("[bold yellow]جاري تطوير هذا القسم...[/bold yellow]")
         
-        input("\nاضغط Enter للعودة...")
+        input("\nاضغط Enter للعودة للقائمة...")
 
 if __name__ == "__main__":
     start()
